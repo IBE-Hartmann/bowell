@@ -1,0 +1,252 @@
+
+
+
+
+
+                                 B O W E L L
+
+                              Benutzerhandbuch
+
+
+                          Version UNIX - November 2021
+                                H.G. Hartmann
+
+
+      BOWELL ist ein Programm zur Berechnung von Verschiebungen im Boden
+  infolge von propagierenden Wellen. Der Boden wird  als horizontal geschich-
+  tet angenommen. Das Programm arbeitet im Frequenzbereich. Die Bodenkennwerte
+  sind linear-elastisch bzw. visko-elastisch. Die Schichten lagern auf einem
+  starren oder einem elastischen Halbraum. Der elastische Halbraum wird durch
+  eine Anzahl von zusaetzlichen Schichten abgebildet, deren Dicken frequenzab-
+  haengig sind. Ausserdem koennen an der Unterseite einfache Daempfer (nach
+  Kuhlemeyer/Lysmer) oder ein viskoser Rand (nach Kausel) angesetzt werden.
+  Zur Berechnung der Flexibilitaetsmatrix des geschichteten Bodens wird das
+  semi-analytische Verfahren nach Waas angewendet:
+
+     Waas,G.: "Dynamisch belastete Fundamente auf geschichtetem Baugrund",
+              VDI-Berichte Nr.381 (1980)
+     Waas,G.,Riggs.,H.R.and Werkle,H.: "Displacement Solutions for Dynamic Loads
+              in Transversely-Isotropic Stratified Media",Earthquake Engineering
+              and Structural Dynamics, Vol.13,173-193 (1985)
+
+  BOWELL berechnet im einzelnen :
+
+    1. Wellenzahlen und  komplexe Eigenformen des geschichteten Bodenprofils.
+
+    2. Verschiebungen oder Geschwindigkeiten infolge Einheitslasten an vorzugebenden
+       Stellen im Bodenprofil.
+
+
+
+
+
+
+
+
+
+
+============================================================================
+                            B O W E L L                          Seite 1
+============================================================================
+
+     I. T e x t k a r t e
+
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 - 80 I      HED I Ueberschrift des Druckprotokolls
+---------I----------I-------------------------------------------------------
+
+    II. H a u p t s t e u e r k a r t e
+
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 -  5 I        N I Anzahl der Bodenschichten                    (Max=200)
+  6 - 10 I      NSB I Anzahl der Radien fuer Berechnung der
+         I          I Verschiebungen im Boden                      (Max=800)
+ 11 - 15 I    NTIEF I Anzahl der Schichtgrenzen fuer Berechnung der
+         I          I Verschiebungen im Boden                      (Max=200)
+         I          I   0 : Alle Schichtgrenzen
+ 16 - 20 I       NF I Anzahl der Frequenzen                        (Max=100)
+         I          I > 0 : Eingabe einzelner Frequenzen
+         I          I < 0 : Eingabe von Anfangsfrequenz und Frequenz-
+         I          I       inkrement
+ 21 - 25 I    IHALB I Schalter fuer Halbraum
+         I          I   0 : starrer Halbraum.
+         I          I   1 : approximierter elastischer Halbraum durch zusaetz-
+         I          I       liche Bodenschichten.
+         I          I   2 : approximierter elastischer Halbraum durch zusaetz-
+         I          I       liche Bodenschichten und viskosen Rand.
+         I          I   3 : approximierter elastischer Halbraum durch zusaetz-
+         I          I       liche Bodenschichten und einfache Daempfer.
+         I          I Der Halbraum wird durch NHALB zusaetzliche Schichten
+         I          I approximiert. Die Bodenkennwerte sind die gleichen wie
+         I          I die der letzten Schicht N in Karte III. Die Dicke H
+         I          I jeder der zusaetzlichen Bodenschichten nimmt mit der
+         I          I Tiefe zu mit dem Faktor ALFA beginnend mit ALFA*H(N).
+         I          I Der Schubmodul der Schichten nimmt mit der Tiefe z zu
+         I          I mit G = G*(1+BETA*z). Dabei ist G der Schubmodul der
+         I          I letzten eingegebenen Bodenschicht N.
+         I          I Fuer jede Frequenz f ist HMAX, der Maximalwert von H,
+         I          I gleich 1/8 der Wellenlaenge.
+         I          I               H < HMAX = v /(8 f)
+         I          I Die gesamte Dicke des approximierten Halbraums ist
+         I          I daher frequenzabhaengig.
+         I          I Fuer IHALB=2 wird zusaetzlich eine "viscous boundary"
+         I          I unterhalb der Schichten angesetzt, sofern nicht f=0.
+         I          I Die Option IHALB = 2 muss mit Vorsicht angewendet wer-
+         I          I den bei niedrigen Frequenzen und einem approximierten
+         I          I Halbraum geringer Dicke.
+         I          I Fuer IHALB=3 wird zusaetzlich ein einfacher Daempfer
+         I          I unterhalb der Schichten angesetzt, sofern nicht f=0.
+ 26 - 30 I    NHALB I Anzahl der Schichten im approximierten Halbraum
+         I          I   IHALB=0 : NHALB   = 0
+         I          I   IHALB=1 : Voreinstellung = 9
+         I          I   IHALB=2 : Voreinstellung = 0
+         I          I   IHALB=3 : Voreinstellung = 0
+ 31 - 40 I     ALFA I Faktor fuer Schichtdicken im Halbraum.
+ 41 - 50 I     BETA I Faktor fuer Schubmodul der Schichten im Halbraum.
+ 51 - 55 I    ISCHA I Ausgabeschalter
+         I          I   0 : Standardausgabe
+         I          I   1 : Zusatzausgabe
+---------I----------I-------------------------------------------------------
+
+
+
+
+============================================================================
+                            B O W E L L                          Seite 3
+============================================================================
+
+  III. B o d e n k e n n w e r t e
+       Die Bodenkennwerte der N Schichten koennen einzeln eingegeben werden
+       oder sie koennen generiert werden. Beide Moeglichkeiten sind beliebig
+       kombinierbar.
+
+----------------------------------------------------------------------------
+  IIIa.  ohne Generierung - 1 Karte pro Schicht
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 -  5 I      --- I frei
+  6 - 10 I        M I Nummer       der Bodenschicht i
+ 11 - 20 I        T I Dicke               "
+ 21 - 30 I      RHO I Massendichte        "
+ 31 - 40 I        G I Schubmodul          "
+ 41 - 50 I     POIS I Poissonzahl         "
+ 51 - 60 I        D I Daempfung           "             (dezimal)
+---------I----------I-------------------------------------------------------
+  IIIb.  mit Generierung - 3 Karten pro generiertem Bereich
+----------------------------------------------------------------------------
+  IIIb.1  1. Karte
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 -  5 I       M1 I Nummer      der ersten Bodenschicht im Bereich
+  6 - 10 I       M2 I Nummer     der letzten Bodenschicht       "
+ 11 - 20 I        T I Dicke der generierten Bodenschichten      "
+ 21 - 30 I      RHO I Massendichte             "                "
+ 31 - 40 I        G I Schubmodul               "                "
+ 41 - 50 I     POIS I Poissonzahl              "                "
+ 51 - 60 I        D I Daempfung                "                "
+---------I----------I-------------------------------------------------------
+   IIIb.2  2. Karte   wie 1. Karte
+----------------------------------------------------------------------------
+   IIIb.3  3. Karte   wenn T in Karte IIIb.2 gleich 0.0 ist, koennen in
+                      Karte IIIb.3 unterschiedliche Schichtdicken eingelesen
+                      werden. Wenn T ungleich 0.0 ist, entfaellt Karte IIIb.3.
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 - 10 I     T(i) I Dicken der zu generierenden Bodenschichten
+   bis   I          I
+ 71 - 80 I          I
+---------I----------I-------------------------------------------------------
+
+    IV. R a d i e n
+        Radien der NSB Kreisringe um den Lastangriffspunkt einer Einzellast,
+        fuer die Verschiebungen oder Geschwindigkeiten im Boden berechnet werden.
+
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 - 10 I    RS(i) I  Radien ( in wachsenden Folge )
+   bis   I          I
+ 71 - 80 I          I
+---------I----------I-------------------------------------------------------
+
+    V. T i e f e n
+        Nummern der Schichtgrenzen fuer die Last und
+        fuer die NTIEF Verschiebungen im Boden. 
+
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 -  5 I   ITIEFL I  Schichtgrenznummer Last
+  6 - 10 I ITIEF(i) I  Schichtgrenznummern Verschiebungen (wachsende Folge)
+   bis   I          I
+ 76 - 80 I          I
+============================================================================
+
+
+
+   VI. E i n g a b e   d e r   F r e q u e n z e n
+
+----------------------------------------------------------------------------
+    VIa.  Eingabe einzelner Frequenzen wenn NF > 0
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 - 10 I     F(i) I  Frequenzen
+   bis   I          I
+ 71 - 80 I          I
+---------I----------I-------------------------------------------------------
+    VIb.  Eingabe von Anfangsfrequenz und Frequenzinkrement wenn NF < 0
+---------I----------I-------------------------------------------------------
+  Spalte I Variable I            Bedeutung
+---------I----------I-------------------------------------------------------
+  1 - 10 I     F(1) I  Anfangsfrequenz
+ 11 - 20 I       DF I  Frequenzinkrement
+============================================================================
+
+
+
+
+
+============================================================================
+
+    Eingabedatei       : <datei>
+    Ausgabedateien     : <datei>.out
+
+    Starten            : bowell <datei>
+
+============================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
