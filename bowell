@@ -1,0 +1,41 @@
+#!/bin/sh
+#...AUFRUF: bowell <datei>
+#...BOWELL-Aufruf
+#---Fehlerbehandlung, wenn zu wenig Argument uebergeben wurden
+if [ $# -lt 1 ]
+then
+   echo "Verschiebungen im geschichteten viskoelastischen Boden"
+   echo "infolge propagierender Wellen"
+   echo "                                                   "
+   echo "Aufruf            : bowell <datei>"
+   echo "  z.B.            : bowell eindat"
+   echo "Nachlaufprogramme : bognu, gnuplot"
+   echo "   "
+   echo "1. Programmlauf bowell"      
+   echo "2. Programmlauf bognu <datei> (Auswertung für Plotten mit gnuplot)" 
+   echo "3. Plot mit gnuplot und Makro-datei bowell.gnu"   
+   echo "   "
+   echo -n "Eingabebeschreibung bowell auf Bildschirm (j/n oder RET)   :"
+   echo "    "   
+   read KEY
+   case $KEY in
+     [jJ]) cat /home/hartmann/Programme/baubow/bowell/bowell.ein | less;;
+   esac
+   exit
+fi
+#---Standardinput fuer BOWELL
+#
+cp $1 BOEIN
+echo " Start BOWELL"
+/home/hartmann/Programme/baubow/bowell/bowell.exe
+#
+rm BOEIN
+mv BOAUS $1.out
+if [ -f BODIS ]
+then
+   mv BODIS $1.dis
+fi
+if [ -f BOFRE ]
+then
+   mv BOFRE $1.fre
+fi
