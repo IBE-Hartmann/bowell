@@ -8,7 +8,7 @@
                               Benutzerhandbuch
 
 
-                          Version LINUX - November 2021
+                          Version UNIX - November 2021
                                 H.G. Hartmann
 
 
@@ -165,27 +165,29 @@
 ---------I----------I-------------------------------------------------------
 
     IV. R a d i e n
-        Radien der NSB Kreisringe um den Lastangriffspunkt einer Einzellast,
-        fuer die Verschiebungen oder Geschwindigkeiten im Boden berechnet werden.
+        Radien der NSB Kreisringe um den Angriffspunkt einer Ring- bzw.
+        Punktlast, fuer die Verschiebungen oder Geschwindigkeiten im Boden
+        berechnet werden.
 
 ---------I----------I-------------------------------------------------------
   Spalte I Variable I            Bedeutung
 ---------I----------I-------------------------------------------------------
-  1 - 10 I    RS(i) I  Radien ( in wachsenden Folge )
+  1 - 10 I    RS(i) I  Radien ( in wachsenden Folge ), i = 1 bis NSB
+ 11 - 20 I          I  i=1: Radius Ringlast (0 = Punktlast)
    bis   I          I
  71 - 80 I          I
 ---------I----------I-------------------------------------------------------
 
     V. T i e f e n
         Nummern der Schichtgrenzen fuer die Last und
-        fuer die NTIEF Verschiebungen im Boden. 
+        fuer die NTIEF Verschiebungen im Boden.
 
 ---------I----------I-------------------------------------------------------
   Spalte I Variable I            Bedeutung
 ---------I----------I-------------------------------------------------------
   1 -  5 I   ITIEFL I  Schichtgrenznummer Last
   6 - 10 I ITIEF(i) I  Schichtgrenznummern Verschiebungen (wachsende Folge)
-   bis   I          I
+   bis   I          I  i = 1 bis NTIEF
  76 - 80 I          I
 ============================================================================
 
